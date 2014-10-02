@@ -1,0 +1,36 @@
+#!/opt/swt/bin/bash
+
+#source ~/.profile
+startTime=$(date +%H:%M:%S)
+startTimeH=$(date +%H)
+startTimeM=$(date +%M)
+startTimeS=$(date +%S)
+not
+execCommand=$($1)
+errorCode=$?
+sleep 1
+ton
+endTime=$(date +%H:%M:%S)
+endTimeH=$(date +%H)
+endTimeM=$(date +%M)
+endTimeS=$(date +%S)
+
+duration="($endTimeH-$startTimeH)*3600+($endTimeM-$startTimeM)*60+($endTimeS-$startTimeS)"
+#echo $duration
+#echo $duration |bc -l
+
+machineName=`uname -a |cut -d " " -f2`
+BODY="Task <$1> finished execution on $machineName
+      Start time: $startTime
+      End   time: $endTime
+      Duration  :   $(($endTimeH-$startTimeH)) Hours, $(($endTimeM-$startTimeM)) Minutes, $(($endTimeS-$startTimeS)) Seconds 
+      Error code: $errorCode" 
+
+echo -e $BODY
+
+SUBJECT="$machineName=>$1=>RC:$errorCode"
+
+echo -e $SUBJECT
+
+echo "$execCommand"
+echo "$BODY" | mailx -s "$SUBJECT" myEmail@myHost.com
